@@ -7,5 +7,6 @@
         http://www.yihaomen.com/schema/people
         http://www.yihaomen.com/schema/people.xsd ">
 
-        <comtest:people id="cutesource" name="aaa" age="1024"/>
-        </beans>
+        <comtest:people id="cutesource" name="okok" age="1024"/>
+        <comtest:animal id="animal" animalName="cat" age="1024"/>
+</beans>
