@@ -19,7 +19,7 @@ public class TaskService {
 	public String runTask() {
 		try {
 			//myret = null;
-			Thread.sleep(5000);
+			Thread.sleep(10000);
 			String output = "Slow task executed:"+Thread.currentThread().getId();
 			logger.info(output);
 			if(myret != null){

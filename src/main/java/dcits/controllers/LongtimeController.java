@@ -42,7 +42,7 @@ public class LongtimeController {
 	private AtomicLong aLong;
 	private ThreadLocal<Integer> accessNum;
 	@PostConstruct
-	public void init()
+	private void init()
 	{
 		logger.info("inited:"+Thread.currentThread().getId());
 		aLong = new AtomicLong();
@@ -150,7 +150,7 @@ public class LongtimeController {
 		Callable ca = new Callable<String>() {
 			@Override
 			public String call() throws Exception {
-				Thread.sleep(3000);
+				Thread.sleep(8000);
 				logger.info("in callable:"+Thread.currentThread().getId());
 				return "callableMethod:"+String.valueOf(aLong.incrementAndGet());
 			}
@@ -189,6 +189,28 @@ public class LongtimeController {
 		logger.info("end deferedResultMethod:"+Thread.currentThread().getId());
 		return deferredResult;
 
+	}
+
+
+
+
+
+
+
+	@GetMapping("/longtime2")
+	@ResponseBody
+	public String greeting2(@RequestParam(name="name", required=false, defaultValue="World") String name) throws ExecutionException, InterruptedException {
+		logger.info("longtime2:"+Thread.currentThread().getId());
+		try {
+			Thread.sleep(8000);
+			aLong.incrementAndGet();
+		}
+		catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+
+		return "longtime2: " + aLong.get();
 	}
 
 }
