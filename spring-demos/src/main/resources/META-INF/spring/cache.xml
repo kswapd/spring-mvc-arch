@@ -21,10 +21,17 @@
         <property name="caches">
             <set>
                 <bean class="com.dcits.cache.RedisCache">
-                    <property name="name" value="myCache" />
+                    <property name="name" value="default" />
                    <!-- <property name="redisTemplate" ref="redisTemplate" />
                     <property name="name" value="default" />
                     <property name="timeout" value="600" /> 10分钟后过期 -->
+                </bean>
+
+                <bean class="com.dcits.cache.RedisCache">
+                    <property name="name" value="nameCache" />
+                    <!-- <property name="redisTemplate" ref="redisTemplate" />
+                     <property name="name" value="default" />
+                     <property name="timeout" value="600" /> 10分钟后过期 -->
                 </bean>
                <!-- <bean class="com.hejia.alauda.redis.SystemRedisCache">
                     <property name="redisTemplate" ref="redisTemplate" />

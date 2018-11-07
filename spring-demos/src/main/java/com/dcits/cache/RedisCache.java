@@ -39,11 +39,11 @@ public class RedisCache implements Cache {
 	/**
 	 * 为了区分跟具体业务的key的冲突，引入平台级的key前缀
 	 */
-	private static final String KEY_PREFIX = "@G_APP_";
+	private static final String KEY_PREFIX = "KXW_STR";
 
 	//private RedisTemplate redisTemplate = null;
 
-	private String name = "kxw_name";
+	private String name = "default";
 
 	private byte[] setKey;
 
@@ -53,6 +53,7 @@ public class RedisCache implements Cache {
 	Jedis jedis = new Jedis("10.88.2.109", 6379);
 
 	public RedisCache() {
+		this.setName(name);
 	}
 
 	public RedisCache(String name) {
@@ -93,6 +94,7 @@ public class RedisCache implements Cache {
 	@Override
 	public ValueWrapper get(Object key) {
 		ValueWrapper wrapper = null;
+
 		byte[] bKey = getByteKey(key);
 		try {
 			Object objRet = SerializationUtils.deserializeObj(
@@ -207,16 +209,16 @@ public class RedisCache implements Cache {
 			return SerializationUtils.serialize(KEY_PREFIX + name + "_" + (String) key);
 		} else {
 			byte[] bKey = SerializationUtils.serializeObj(key);
-			return bKey;
+			return byteMerger(setKey, bKey);
 		}
 	}
 
-	/*private byte[] byteMerger(byte[] byte_1, byte[] byte_2) {
+	private byte[] byteMerger(byte[] byte_1, byte[] byte_2) {
 		byte[] byte_3 = new byte[byte_1.length + byte_2.length];
 		System.arraycopy(byte_1, 0, byte_3, 0, byte_1.length);
 		System.arraycopy(byte_2, 0, byte_3, byte_1.length, byte_2.length);
 		return byte_3;
-	}*/
+	}
 
 	protected ValueWrapper wrapValue(Object value) {
 		return value == null ? null : new SimpleValueWrapper(value);
