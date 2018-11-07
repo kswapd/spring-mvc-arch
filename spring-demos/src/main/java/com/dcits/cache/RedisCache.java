@@ -169,6 +169,9 @@ public class RedisCache implements Cache {
 
 			// set本身的K/V
 			jedis.del(bKey);
+			String str1 = "return redis.call('get','kkk')";
+			Object o = jedis.eval(str1);
+			logger.info("----"+o.toString());
 		} catch (Throwable t) {
 			throw new CacheException(t.getMessage(), t);
 		}
