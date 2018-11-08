@@ -5,6 +5,7 @@ import com.dcits.beans.AopDemo;
 import com.dcits.beans.BookInfo;
 import com.dcits.beans.CacheDemo;
 import com.dcits.beans.UserInfo;
+import com.dcits.cache.CacheUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -16,8 +17,9 @@ public class Demo {
 	private final static Logger LOGGER = LoggerFactory.getLogger(Demo.class);
 
 	public static void main(String[] args) {
-		testCache();
+		//testCache();
 		//testAop();
+		testCacheScript();
 	}
 
 	public static void testAop()
@@ -85,6 +87,11 @@ public class Demo {
 				e.printStackTrace();
 			}*/
 		}
+	}
+	public static void testCacheScript()
+	{
+		CacheUtils cu = new CacheUtils("uu");
+		cu.testScript();
 	}
 }
 
