@@ -304,6 +304,10 @@ public class CacheUtils implements Cache {
 		Object objRet = SerializationUtils.deserializeObj((byte [])obj);
 		logger.info("obj:"+objRet.toString());
 
+		String snames="192.168.2.54:2181,192.168.2.219:2181,192.168.2.247:2181;";
+		String[] shardArray = snames.split(";");
+		logger.info(""+shardArray.length);
+
 	}
 
 }
