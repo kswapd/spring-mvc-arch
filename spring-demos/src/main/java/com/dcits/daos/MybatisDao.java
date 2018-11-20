@@ -11,7 +11,6 @@ package com.dcits.daos;
 		import org.mybatis.spring.SqlSessionTemplate;
 		import org.springframework.stereotype.Repository;
 
-@Repository
 public class MybatisDao{
 
 	@Resource
