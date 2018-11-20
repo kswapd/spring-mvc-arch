@@ -6,8 +6,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.dcits.beans.AopDemo;
 import com.dcits.beans.BookInfo;
 import com.dcits.beans.CacheDemo;
+import com.dcits.beans.DaoDemo;
 import com.dcits.beans.UserInfo;
 import com.dcits.cache.CacheUtils;
+import com.dcits.daos.TestDao;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +42,9 @@ public class Demo {
 
 		//testThreadLocal();
 
-		testFuture();
+		//testFuture();
+
+		testMybatis();
 	}
 
 	public static void testAop()
@@ -263,5 +267,23 @@ public class Demo {
 
 
 	}
+
+
+
+	public static void testMybatis()
+	{
+		ClassPathXmlApplicationContext appContext = new ClassPathXmlApplicationContext(new String[]{"db.xml"});
+		TestDao testDao = appContext.getBean(TestDao.class);
+		DaoDemo dd = new DaoDemo();
+		dd.setId(111);
+		DaoDemo info = testDao.findById(111);
+		LOGGER.info("get dao:{},{}", testDao.getCount(dd),info.toString());
+
+		List<DaoDemo> linfo = testDao.getLimit(3);
+		linfo.forEach(o -> LOGGER.info(o.toString()));
+	}
+
+
+
 }
 
