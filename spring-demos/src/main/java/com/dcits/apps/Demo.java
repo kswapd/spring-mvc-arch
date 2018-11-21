@@ -7,9 +7,12 @@ import com.dcits.beans.AopDemo;
 import com.dcits.beans.BookInfo;
 import com.dcits.beans.CacheDemo;
 import com.dcits.beans.DaoDemo;
+import com.dcits.beans.Hint;
 import com.dcits.beans.UserInfo;
 import com.dcits.cache.CacheUtils;
 import com.dcits.daos.TestDao;
+import com.dcits.exceptions.GalaxyException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,9 +26,22 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
 
 /**
  * Created by kongxiangwen on 11/7/18 w:45.
@@ -44,7 +60,10 @@ public class Demo {
 
 		//testFuture();
 
-		testMybatis();
+		//testMybatis();
+
+		Demo d = new Demo();
+		d.testXmlParser();
 	}
 
 	public static void testAop()
@@ -283,6 +302,108 @@ public class Demo {
 		linfo.forEach(o -> LOGGER.info(o.toString()));
 	}
 
+
+
+
+
+
+//-------------------------
+
+
+	private static Hint parseHint(Element element) {
+		 final  String HINT_SDB = "sdb";
+		 final  String HINT_TS = "ts";
+		Hint hint = new Hint();
+		String sdbComment = element.getAttribute(HINT_SDB);
+		if (sdbComment != null && sdbComment.length() > 0) {
+			hint.setSdb(sdbComment);
+		}
+		String tsComment = element.getAttribute(HINT_TS);
+		if (tsComment != null && tsComment.length() > 0) {
+			hint.setTs(tsComment);
+		}
+		return hint;
+	}
+
+	private static List<String> parseSqlmaps(NodeList nodes) {
+		List<String> list = new ArrayList<>();
+		for (int i = 0; i < nodes.getLength(); i++) {
+			Node node = nodes.item(i);
+			if (node instanceof Element) {
+				Text text = (Text) node.getFirstChild();
+				list.add(text.getData().trim());
+			}
+		}
+		return list;
+	}
+	public  DocumentBuilder createDocumentBuilder() throws ParserConfigurationException {
+
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+	//	new SimpleErrorHandler(logger)
+		factory.setNamespaceAware(true);
+		final int VALIDATION_NONE = 0;
+		final int VALIDATION_DTD = 1;
+		final int VALIDATION_XSD = 2;
+		final String SCHEMA_LANGUAGE_ATTRIBUTE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
+		final String XSD_SCHEMA_LANGUAGE = "http://www.w3.org/2001/XMLSchema";
+		//EntityResolver = resolver = ClasspathEntityResolver.getInstance()
+
+		DocumentBuilder docBuilder = factory.newDocumentBuilder();
+		//docBuilder.setErrorHandler(errorHandler);
+		return docBuilder;
+
+	}
+	public  void testXmlParser()
+	{
+		Map<String, Hint> mapping = new HashMap<>();
+		 Resource[] locations = null;
+		DocumentBuilder builder = null;
+		 final ResourcePatternResolver resourceResolver;
+		resourceResolver = new PathMatchingResourcePatternResolver(getClass().getClassLoader());
+		Logger logger = LoggerFactory.getLogger(Demo.class);
+
+		try {
+			locations = resourceResolver.getResources("classpath*:/hint/*.xml");
+		}catch (IOException e){
+		}
+
+		if(locations != null) {
+			try {
+				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+				builder = factory.newDocumentBuilder();
+			}
+			catch (ParserConfigurationException e) {
+				e.printStackTrace();
+			}
+
+			for (Resource resource : locations) {
+				if (!resource.exists() || !resource.isReadable()) {
+					throw new GalaxyException("can't read hint xml file:" + resource.toString());
+				}
+				try {
+
+					Document doc = builder.parse(resource.getInputStream());
+					Element root = doc.getDocumentElement();
+					NodeList hints = root.getChildNodes();
+					int size = hints.getLength();
+					for (int i = 0; i < size; i++) {
+						Node e = hints.item(i);
+						if (e instanceof Element) {
+							Hint hint = parseHint((Element) e);
+							List<String> sqlmaps = parseSqlmaps(e.getChildNodes());
+							for (String sqlmap : sqlmaps) {
+								mapping.put(sqlmap, hint);
+							}
+						}
+					}
+
+				}catch ( Exception e){
+					;
+				}
+			}
+			mapping.forEach((k,hint)->LOGGER.info("hint:{},{}", k,hint.toString()));
+		}
+	}
 
 
 }
