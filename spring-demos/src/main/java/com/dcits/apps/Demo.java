@@ -26,6 +26,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -397,12 +398,30 @@ public class Demo {
 						}
 					}
 
-				}catch ( Exception e){
+				}
+				catch (Exception e) {
 					;
 				}
 			}
-			mapping.forEach((k,hint)->LOGGER.info("hint:{},{}", k,hint.toString()));
 		}
+			mapping.forEach((k,hint)->LOGGER.info("hint:{},{}", k,hint.toString()));
+
+			String containStr = "com.dcits.galaxy";
+			long count = mapping.entrySet().stream()
+					.filter(x->x.getKey().contains(containStr))
+					.count();
+			LOGGER.info("count contains {}:{}",containStr,count);
+
+
+		Map<String, Hint> containedMapping =
+				mapping.entrySet().stream()
+				.filter(x->x.getKey().contains(containStr))
+				.collect(Collectors.toMap(x->x.getKey(), x->x.getValue()));
+
+
+		containedMapping.forEach((k,hint)->LOGGER.info("collected hint:{},{}", k,hint.toString()));
+
+
 	}
 
 
