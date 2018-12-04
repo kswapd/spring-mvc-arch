@@ -50,7 +50,7 @@ public class RedisCache implements Cache {
 	private int period = 1000;
 
 
-	Jedis jedis = new Jedis("10.88.2.109", 6379);
+	Jedis jedis = new Jedis("10.88.2.105", 6379);
 
 	public RedisCache() {
 		this.setName(name);
@@ -121,6 +121,9 @@ public class RedisCache implements Cache {
 
 	@Override
 	public void put(Object key, Object value) {
+
+
+		logger.info("Putting value {},{}.", key, value);
 		if (value == null) {
 			return;
 		}
@@ -169,9 +172,9 @@ public class RedisCache implements Cache {
 
 			// set本身的K/V
 			jedis.del(bKey);
-			String str1 = "return redis.call('get','kkk')";
-			Object o = jedis.eval(str1);
-			logger.info("----"+o.toString());
+			//String str1 = "return redis.call('get','kkk')";
+			//Object o = jedis.eval(str1);
+			//logger.info("----"+o.toString());
 		} catch (Throwable t) {
 			throw new CacheException(t.getMessage(), t);
 		}

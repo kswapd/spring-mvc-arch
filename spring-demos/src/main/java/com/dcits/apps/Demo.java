@@ -9,6 +9,7 @@ import com.dcits.beans.CacheDemo;
 import com.dcits.beans.DaoDemo;
 import com.dcits.beans.Hint;
 import com.dcits.beans.UserInfo;
+import com.dcits.beans.ZkLockBean;
 import com.dcits.cache.CacheUtils;
 import com.dcits.daos.TestDao;
 import com.dcits.exceptions.GalaxyException;
@@ -30,8 +31,11 @@ import java.util.stream.Collectors;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import org.I0Itec.zkclient.ZkClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -47,6 +51,7 @@ import org.xml.sax.ErrorHandler;
 /**
  * Created by kongxiangwen on 11/7/18 w:45.
  */
+
 public class Demo {
 	private final static Logger LOGGER = LoggerFactory.getLogger(Demo.class);
 
@@ -63,8 +68,13 @@ public class Demo {
 
 		//testMybatis();
 
-		Demo d = new Demo();
-		d.testXmlParser();
+		//Demo d = new Demo();
+		//d.testXmlParser();
+
+		//testApplicationListener();
+		testZk();
+
+
 	}
 
 	public static void testAop()
@@ -95,9 +105,8 @@ public class Demo {
 
 	public static void testCache()
 	{
-		ClassPathXmlApplicationContext appContext = new ClassPathXmlApplicationContext(new String[]{"app.xml", "classpath*:META-INF/spring/*.xml"});
+		ClassPathXmlApplicationContext appContext = new ClassPathXmlApplicationContext(new String[]{"app.xml", "classpath*:META-INF/spring/cache.xml"});
 		CacheDemo cacheDemo = appContext.getBean(CacheDemo.class);
-		AopDemo aopDemo = appContext.getBean(AopDemo.class);
 		int i = 0;
 		while (true) {
 			i ++;
@@ -105,16 +114,20 @@ public class Demo {
 			LOGGER.info("get user cache:{},{}", uinfo.getName(),uinfo.getAge());
 			//cacheDemo.setName("kxw-"+i);
 
-			BookInfo binfo = cacheDemo.getBookInfoById("33");
-
-			LOGGER.info("get book cache:{},{}", binfo.getTitle(),binfo.getPrice());
+			/*BookInfo binfo = cacheDemo.getBookInfoById("33");
+			LOGGER.info("get book cache:{},{}", binfo.getTitle(),binfo.getPrice());*/
 
 
 			if(i == 3){
+
+
 				uinfo.setName("999");
-				binfo.setTitle("book999");
-				cacheDemo.updateBookInfoById(binfo);
 				cacheDemo.updateUserInfo(uinfo);
+
+
+				/*binfo.setTitle("book999");
+				cacheDemo.updateBookInfoById(binfo);*/
+
 
 			}
 			try {
@@ -420,6 +433,87 @@ public class Demo {
 
 
 		containedMapping.forEach((k,hint)->LOGGER.info("collected hint:{},{}", k,hint.toString()));
+
+
+	}
+
+
+
+
+
+	//----------
+
+	public static void testApplicationListener()
+	{
+		ClassPathXmlApplicationContext appContext = new ClassPathXmlApplicationContext(new String[]{"app-annotations.xml"});
+	}
+
+
+	//--------------
+	public static void testZk() {
+
+
+		//zkClient.delete(path);
+		//zkClient.createEphemeral(lockPath,lockValue);
+		int size = 3;
+		ThreadFactory namedThreadFactory = new NamedThreadFactory("BatchSplitWorker");
+		BlockingQueue<Runnable> queue = new LinkedBlockingQueue<Runnable>();
+		ThreadPoolExecutor executor = new ThreadPoolExecutor(5, 15, 60, TimeUnit.SECONDS, queue, namedThreadFactory);
+
+		List<Future<String>> allRet = new ArrayList<>();
+		ZkLockBean zk = new ZkLockBean();
+		/*for (int i = 0; i < size; i++) {
+			final int index = i;
+			allRet.add(
+					executor.submit(new Callable<String>() {
+						@Override
+						public String call() throws Exception {
+
+							//ZkLockBean zk = new ZkLockBean();
+							boolean isLock = zk.lock();
+							if (isLock) {
+
+								LOGGER.info("callable can be finish-------------------{}", index);
+								try {
+									Thread.sleep(1000);
+								}
+								catch (InterruptedException e1) {
+									e1.printStackTrace();
+								}
+								zk.unlock();
+							}
+
+							return ("oo_" + index);
+						}
+					})
+			);
+
+
+
+
+		}*/
+
+
+		for (int i = 0; i < size; i++) {
+
+			new Thread(()->{
+				boolean isLock = zk.lock();
+				if (isLock) {
+
+					LOGGER.info("callable can be finish-------------------{}", Thread.currentThread().getId());
+					try {
+						Thread.sleep(1000);
+					}
+					catch (InterruptedException e1) {
+						e1.printStackTrace();
+					}
+					zk.unlock();
+				}
+			}
+			).start();
+		}
+
+
 
 
 	}

@@ -4,12 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 
 /**
  * Created by kongxiangwen on 11/6/18 w:45.
  */
-@CacheConfig(cacheNames="default")
+@CacheConfig(cacheNames="nameCache")
 public class CacheDemo {
 
 
@@ -54,6 +55,16 @@ public class CacheDemo {
 	}
 
 
+	@Cacheable(key="#info.getId()")
+	public UserInfo setUserInfoById(UserInfo info)
+	{
+
+		LOGGER.info("setting user info");
+		//return new UserInfo("kxw-"+id, 55, id);
+		return info;
+	}
+
+
 	@Cacheable
 	public BookInfo getBookInfoById(String id)
 	{
@@ -62,13 +73,14 @@ public class CacheDemo {
 		return new BookInfo("title-"+id, (float)22.0, id);
 	}
 
-	@CacheEvict(value="default",key="#info.getId()")
-	public void updateUserInfo(UserInfo info)
+	@CachePut(key="#info.getId()")
+	public UserInfo updateUserInfo(UserInfo info)
 	{
-		return;
+
+		return info;
 	}
 
-	@CacheEvict(value="default",key="#info.getId()")
+	@CacheEvict(key="#info.getId()")
 	public void updateBookInfoById(BookInfo info)
 	{
 		return;
