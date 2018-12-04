@@ -37,8 +37,8 @@ public class ZkLockBean {
 			try {
 
 				zkClient.createPersistent(path, true);
+				//zkClient.createPersistent(lockPath, "abcd");
 				zkClient.createEphemeral(lockPath, "abcd");
-
 				LOGGER.info("zk lock ok");
 				ret = true;
 			}
