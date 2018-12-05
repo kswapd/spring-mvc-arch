@@ -19,7 +19,7 @@ public class ZkLockBean {
 	public ZkLockBean(){
 
 
-		 zkClient = new ZkClient("10.88.2.105:2181",20000,5000);
+		 zkClient = new ZkClient("10.88.2.116:2181",20000,5000);
 
 
 		//zkClient.createPersistent(test,"efg");

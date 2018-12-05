@@ -455,14 +455,14 @@ public class Demo {
 
 		//zkClient.delete(path);
 		//zkClient.createEphemeral(lockPath,lockValue);
-		int size = 3;
+		int size = 5;
 		ThreadFactory namedThreadFactory = new NamedThreadFactory("BatchSplitWorker");
 		BlockingQueue<Runnable> queue = new LinkedBlockingQueue<Runnable>();
 		ThreadPoolExecutor executor = new ThreadPoolExecutor(5, 15, 60, TimeUnit.SECONDS, queue, namedThreadFactory);
 
 		List<Future<String>> allRet = new ArrayList<>();
 		ZkLockBean zk = new ZkLockBean();
-		/*for (int i = 0; i < size; i++) {
+		for (int i = 0; i < size; i++) {
 			final int index = i;
 			allRet.add(
 					executor.submit(new Callable<String>() {
@@ -473,7 +473,7 @@ public class Demo {
 							boolean isLock = zk.lock();
 							if (isLock) {
 
-								LOGGER.info("callable can be finish-------------------{}", index);
+								LOGGER.info("callable success-------------------{}", index);
 								try {
 									Thread.sleep(1000);
 								}
@@ -481,6 +481,8 @@ public class Demo {
 									e1.printStackTrace();
 								}
 								zk.unlock();
+							}else{
+								LOGGER.info("callable failed-------------------{}", index);
 							}
 
 							return ("oo_" + index);
@@ -491,10 +493,10 @@ public class Demo {
 
 
 
-		}*/
+		}
 
 
-		for (int i = 0; i < size; i++) {
+		/*for (int i = 0; i < size; i++) {
 
 			new Thread(()->{
 				boolean isLock = zk.lock();
@@ -511,7 +513,7 @@ public class Demo {
 				}
 			}
 			).start();
-		}
+		}*/
 
 
 
