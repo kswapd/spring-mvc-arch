@@ -9,6 +9,7 @@ import com.dcits.beans.CacheDemo;
 import com.dcits.beans.DaoDemo;
 import com.dcits.beans.Hint;
 import com.dcits.beans.UserInfo;
+import com.dcits.beans.ZkGetMasterBean;
 import com.dcits.beans.ZkLockBean;
 import com.dcits.cache.CacheUtils;
 import com.dcits.daos.TestDao;
@@ -72,7 +73,9 @@ public class Demo {
 		//d.testXmlParser();
 
 		//testApplicationListener();
-		testZk();
+		//testZk();
+
+		testGetMaster();
 
 
 	}
@@ -514,6 +517,81 @@ public class Demo {
 			}
 			).start();
 		}*/
+
+
+
+
+	}
+
+
+
+	public static void testGetMaster() {
+
+
+		//zkClient.delete(path);
+		//zkClient.createEphemeral(lockPath,lockValue);
+		int size = 5;
+		ThreadFactory namedThreadFactory = new NamedThreadFactory("BatchSplitWorker");
+		BlockingQueue<Runnable> queue = new LinkedBlockingQueue<Runnable>();
+		ThreadPoolExecutor executor = new ThreadPoolExecutor(5, 15, 60, TimeUnit.SECONDS, queue, namedThreadFactory);
+
+		List<Future<ZkGetMasterBean>> allRet = new ArrayList<>();
+
+		for (int i = 0; i < size; i++) {
+			final int index = i;
+			allRet.add(
+					executor.submit(new Callable<ZkGetMasterBean>() {
+						@Override
+						public ZkGetMasterBean call() throws Exception {
+
+							ZkGetMasterBean zk = new ZkGetMasterBean();
+							boolean isLock = zk.TryMaster();
+							if (isLock) {
+
+								//LOGGER.info("callable success, master-------------------{}", index);
+								/*try {
+									Thread.sleep(1000);
+								}
+								catch (InterruptedException e1) {
+									e1.printStackTrace();
+								}
+								zk.CancelMaster();*/
+							}
+							else {
+								//LOGGER.info("callable failed-------------------{}", index);
+							}
+
+							return zk;
+						}
+					})
+			);
+		}
+
+			while(true) {
+				for (int j = 0; j < size; j++) {
+					try {
+						ZkGetMasterBean zk = allRet.get(j).get();
+						if(zk.isMaster()){
+							LOGGER.info("current master-------------------:{}", j);
+							zk.CancelMaster();
+						}
+					}
+					catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					catch (ExecutionException e) {
+						e.printStackTrace();
+					}
+				}
+
+				try {
+					Thread.sleep(1000);
+				}
+				catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+
 
 
 
