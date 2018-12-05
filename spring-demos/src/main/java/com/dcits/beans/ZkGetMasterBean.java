@@ -110,7 +110,9 @@ public class ZkGetMasterBean implements IZkChildListener, IZkDataListener, IZkSt
 			if (!zkClient.exists(path)) {
 				zkClient.createPersistent(path, true);
 			}
-			//zkClient.subscribeDataChanges(lockPath, this);
+			if(zkClient.exists(path)) {
+				zkClient.subscribeDataChanges(lockPath, this);
+			}
 			zkClient.subscribeChildChanges(path, this);
 		}
 
