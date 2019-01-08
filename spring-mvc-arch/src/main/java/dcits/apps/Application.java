@@ -18,8 +18,8 @@ import org.springframework.context.annotation.ImportResource;
 
 
 @SpringBootApplication
-//@ImportResource(locations={"classpath*:new-schemas.xml", "META-INF/**/*.xml"})
-@ImportResource("classpath:new-schemas.xml")
+@ImportResource(locations={"classpath:new-schemas.xml", "classpath:plain-beans.xml","classpath:mybatis/mybatis-beans.xml"})
+//@ImportResource("classpath:new-schemas.xml")
 @ComponentScan("dcits")
 public class Application implements ApplicationContextAware {
 	private static final Logger logger = LoggerFactory.getLogger(Application.class);

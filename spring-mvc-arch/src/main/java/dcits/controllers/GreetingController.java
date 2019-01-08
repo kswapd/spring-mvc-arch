@@ -4,13 +4,17 @@ package dcits.controllers;
  * Created by kongxiangwen on 5/21/18 w:21.
  */
 
+import dcits.daos.TestDao;
 import dcits.models.Animal;
+import dcits.models.DaoDemo;
 import dcits.models.People;
 
 
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +29,9 @@ public class GreetingController {
 	People p;
 	@Autowired
 	Animal animal;*/
+
+	@Autowired
+	TestDao testDao;
 
 
 	@GetMapping("/ping")
@@ -57,6 +64,23 @@ public class GreetingController {
 	@ResponseBody
 	String home() {
 		return "Hello Spring boot!";// + "people:"+p.getName()+"animal:"+animal.getAnimalName();
+	}
+
+
+	@GetMapping("/testMybatis")
+	@ResponseBody
+	public String testMybatis() {
+
+		/*ClassPathXmlApplicationContext appContext = new ClassPathXmlApplicationContext(new String[]{"db.xml"});
+		TestDao testDao = appContext.getBean(TestDao.class);*/
+		DaoDemo dd = new DaoDemo();
+		dd.setId(111);
+		DaoDemo info = testDao.findById(111);
+		logger.info("get dao:{},{}", testDao.getCount(dd),info.toString());
+
+		List<DaoDemo> linfo = testDao.getLimit(3);
+		linfo.forEach(o -> logger.info(o.toString()));
+		return "testMybatis";
 	}
 
 }
