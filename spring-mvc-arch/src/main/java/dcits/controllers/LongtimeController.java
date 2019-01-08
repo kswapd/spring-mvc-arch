@@ -32,11 +32,11 @@ public class LongtimeController {
 
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Autowired
+	/*@Autowired
 	People p;
 	@Autowired
 	Animal animal;
-
+*/
 	@Autowired
 	TaskService taskService;
 	private AtomicLong aLong;

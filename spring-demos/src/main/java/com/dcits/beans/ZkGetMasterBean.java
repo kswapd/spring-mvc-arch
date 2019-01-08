@@ -28,7 +28,7 @@ public class ZkGetMasterBean implements IZkChildListener, IZkDataListener, IZkSt
 	public ZkGetMasterBean(){
 
 
-		 zkClient = new ZkClient("10.88.2.116:2181",20000,5000);
+		 zkClient = new ZkClient("127.0.0.1:2181",20000,5000);
 
 
 		//zkClient.createPersistent(test,"efg");

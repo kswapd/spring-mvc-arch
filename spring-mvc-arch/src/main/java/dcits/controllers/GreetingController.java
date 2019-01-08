@@ -21,17 +21,25 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class GreetingController {
 	private static final Logger logger = LoggerFactory.getLogger(GreetingController.class);
-	@Autowired
+	/*@Autowired
 	People p;
 	@Autowired
-	Animal animal;
+	Animal animal;*/
+
+
+	@GetMapping("/ping")
+	@ResponseBody
+	public String ping() {
+		return "pong";
+	}
+
 
 	@GetMapping("/greeting")
 	@ResponseBody
 	public String greeting(@RequestParam(name="name", required=false, defaultValue="World") String name, Model model) {
 		model.addAttribute("name", name);
 		//People p = (People) ctx.getBean("cutesource");
-		System.out.println(p.getName());
+		//System.out.println(p.getName());
 		logger.info("ooooooo");
 		logger.info("asdfs mobile=13212345678,baseAcctName=kxw123,baseAcctNo=610422342343323432,pwd=12345678");
 		return "greeting " + name;
@@ -41,14 +49,14 @@ public class GreetingController {
 	@GetMapping("/greeting2")
 	public String greeting2(@RequestParam(name="name", required=false, defaultValue="World") String name, Model model) {
 		model.addAttribute("name", name);
-		System.out.println(p.getName());
+		//System.out.println(p.getName());
 		return "greeting2";
 	}
 
 	@RequestMapping("/sb")
 	@ResponseBody
 	String home() {
-		return "Hello Spring boot!" + "people:"+p.getName()+"animal:"+animal.getAnimalName();
+		return "Hello Spring boot!";// + "people:"+p.getName()+"animal:"+animal.getAnimalName();
 	}
 
 }
