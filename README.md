@@ -9,7 +9,7 @@
    * spring-mvc-arch shows about log sensitive converter, spring boot features, spring boot datasource using mybatis,and different bean defination types
    when this app is started, you can access urls localhost:8081/ping for connection test, and /testMybatis to test datasource
    , you can also view "----*" prints for People bean in console.
-  * To monitor druid datasource performance, you can visit http://localhost:8081/druid/login.html, default username and password are admin/admin.
+   * To monitor druid datasource performance, you can visit http://localhost:8081/druid/login.html, default username and password are admin/admin.
 
 
 
