@@ -17,7 +17,7 @@
         http://www.yihaomen.com/schema/people.xsd ">
 
 
-        <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!--<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
                 <property name="configLocation" value="classpath:mybatis/mybatis-config.xml" />
                 <property name="dataSource" ref="druidDataSource" />
         </bean>
@@ -25,6 +25,6 @@
         <bean id = "sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate" >
 
                 <constructor-arg index="0" ref="sqlSessionFactory" />
-        </bean>
+        </bean>-->
 
 </beans>
