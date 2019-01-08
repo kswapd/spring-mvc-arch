@@ -17,11 +17,8 @@
         http://www.yihaomen.com/schema/people.xsd ">
 
 
-
-
-        <comtest:people id="schemaPeople" name="okok" age="56"/>
-        <comtest:animal id="schemaAnimal" animalName="cat" age="78"/>
-
-       <!-- <bean id ="People" class="dcits.models.People" />-->
+        <bean id ="beanPeople" class="dcits.models.People">
+                <property name="age" value="12" />
+        </bean>
 
 </beans>
