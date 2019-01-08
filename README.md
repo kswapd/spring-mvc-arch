@@ -1,4 +1,4 @@
-# Spring Demos
+# Spring legacy
 
 ## 1. Specifications
 
