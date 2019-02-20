@@ -48,6 +48,8 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by kongxiangwen on 11/7/18 w:45.
@@ -77,9 +79,30 @@ public class Demo {
 
 		//testGetMaster();
 
-		testCrcSlot();
+		//testCrcSlot();
+		testRegex();
 	}
 
+	private static void testRegex()
+	{
+		String s = "A876X";
+		String s2 = "\"threadNo\":\"qtp1701931646-476\"},\"rs\":{\"ret\":[{\"retCode\":\"999994\",\"retMsg\":\"9999a94\"}]},\"retStatus\":\"F\"}";
+		// 把要匹配的字符串写成正则表达式，然后要提取的字符使用括号括起来
+		// 在这里，我们要提取最后一个数字，正则规则就是“一个数字加上大于等于0个非数字再加上结束符”
+		//Pattern pattern = Pattern.compile("(\\d)[^\\d]*$");
+
+		Pattern pattern = Pattern.compile("\"retCode\"\\s*:\\s*\"(.*?)\\s*\",.*retMsg\"\\s*:\\s*\"(.*?)\\s*\"");
+		Pattern pattern2 = Pattern.compile("\"retStatus\"\\s*:\\s*\"(.*?)\\s*\"");
+
+		Matcher matcher = pattern2.matcher(s2);
+		if(matcher.find()) {
+			System.out.println(matcher.groupCount());
+			System.out.println(matcher.group(1));
+			//System.out.println(matcher.group(2));
+		}
+
+
+	}
 
 	/*private static int getCrc(byte[] data) {
 		int[] table = {
