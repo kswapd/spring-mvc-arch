@@ -80,13 +80,30 @@ public class Demo {
 		//testGetMaster();
 
 		//testCrcSlot();
-		testRegex();
-	}
+		//testRegex();
+		testRetBool();
 
+
+	}
+	private static boolean isTrue(){
+		boolean a = false;
+		return a;
+	}
+	private static void testRetBool(){
+			if(isTrue()){
+				System.out.println("ttttttt------");
+			}else{
+				System.out.println("fffffff------");
+			}
+
+
+	}
 	private static void testRegex()
 	{
 		String s = "A876X";
-		String s2 = "\"threadNo\":\"qtp1701931646-476\"},\"rs\":{\"ret\":[{\"retCode\":\"999994\",\"retMsg\":\"9999a94\"}]},\"retStatus\":\"F\"}";
+		String s2 = "\"threadNo\":\"qtp1701931646-476\"},\"rs\":{\"ret\":[{\"retCode\":\"000000\",\"retMsg\":\"000000 SDDD\"}]},\"retStatus\":\"F\"}";
+		String st = "{\"sysHead\":{\"runDate\":\"20190221\",\"seqNo\":\"16\",\"serviceCode\":\"MBSD_GA\",\"tranTimestamp\":\"170450367\",\"sourceBranchNo\":\"2400\",\"reference\":\"1902210000000007\",\"messageType\":\"1000\",\"macValue\":\"\",\"company\":\"\",\"systemId\":\"\",\"filePath\":\"\",\"destBranchNo\":\"1400\",\"authUserId\":\"\",\"sourceType\":\"MT\",\"messageCode\":\"0103\",\"tranDate\":\"20170510\",\"threadNo\":\"qtp1995837782-16\"},\"rs\":{\"ret\":[{\"retCode\":\"000000\",\"retMsg\":\"000000 SUCCESS\"}]},\"retStatus\":\"S\",\"response\":{\"createTime\":\"174838112\",\"bal\":55755,\"acctName\":\"CHENTEST\",\"status\":\"A\",\"createDate\":\"20180927\"}}";
+
 		// 把要匹配的字符串写成正则表达式，然后要提取的字符使用括号括起来
 		// 在这里，我们要提取最后一个数字，正则规则就是“一个数字加上大于等于0个非数字再加上结束符”
 		//Pattern pattern = Pattern.compile("(\\d)[^\\d]*$");
@@ -94,10 +111,18 @@ public class Demo {
 		Pattern pattern = Pattern.compile("\"retCode\"\\s*:\\s*\"(.*?)\\s*\",.*retMsg\"\\s*:\\s*\"(.*?)\\s*\"");
 		Pattern pattern2 = Pattern.compile("\"retStatus\"\\s*:\\s*\"(.*?)\\s*\"");
 
-		Matcher matcher = pattern2.matcher(s2);
+		Matcher matcher = pattern2.matcher(st);
 		if(matcher.find()) {
 			System.out.println(matcher.groupCount());
 			System.out.println(matcher.group(1));
+			//System.out.println(matcher.group(2));
+		}
+
+		 matcher = pattern.matcher(st);
+		if(matcher.find()) {
+			System.out.println(matcher.groupCount());
+			System.out.println(matcher.group(1));
+			System.out.println(matcher.group(2));
 			//System.out.println(matcher.group(2));
 		}
 
